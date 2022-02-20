@@ -25,4 +25,14 @@ module.exports = {
         res.status(400).json(err);
       });
   },
+
+  findOneProduct: (req, res) => {
+    Product.findOne({ _id: req.params.id })
+      .then((product) => {
+        console.log(product);
+        res.json(product);
+      })
+
+      .catch((err) => res.json(err));
+  },
 };
