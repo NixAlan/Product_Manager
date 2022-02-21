@@ -1,17 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { navigate } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 
-const NewProduct = (props) => {
+const EditGame = (props) => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
-  const { products, setProducts } = props;
+  const { id } = props;
 
-  const submitHandle = (e) => {
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8000/api/product/${id}`)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setTitle(res.data.title);
+        setPrice(res.data.price);
+        setDescription(res.data.description);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const editHandle = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8000/api/product", {
+      .put(`http://localhost:8000/api/product/${id}`, {
         title,
         price,
         description,
@@ -19,8 +32,7 @@ const NewProduct = (props) => {
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        // navigate("/");
-        setProducts([...products, res.data]);
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);
@@ -30,9 +42,9 @@ const NewProduct = (props) => {
 
   return (
     <div>
-      <form onSubmit={submitHandle}>
+      <form onSubmit={editHandle}>
         <h1>Product Manager</h1>
-        <div className="rowNewProduct">
+        <div>
           <label>Title:</label>
           <input
             value={title}
@@ -40,15 +52,15 @@ const NewProduct = (props) => {
             type="text"
           />
         </div>
-        <div className="rowNewProduct">
-          <label>Price: $</label>
+        <div>
+          <label>Price:</label>
           <input
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             type="number"
           />
         </div>
-        <div className="rowNewProduct">
+        <div>
           <label>Description:</label>
           <input
             value={description}
@@ -57,10 +69,10 @@ const NewProduct = (props) => {
           />
         </div>
 
-        <button>Create</button>
+        <button>Edit</button>
       </form>
     </div>
   );
 };
 
-export default NewProduct;
+export default EditGame;

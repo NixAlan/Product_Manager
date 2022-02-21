@@ -17,12 +17,30 @@ const ProductList = (props) => {
       });
   }, []);
 
+  const deleteProduct = (idFromBelow) => {
+    axios
+      .delete(`http://localhost:8000/api/product/${idFromBelow}`)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setProducts(
+          products.filter((product, index) => product._id !== idFromBelow)
+        );
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div>
+      <h1>All Products</h1>
       {products.map((product, index) => {
         return (
-          <div key={index}>
+          <div className="rowProducts" key={index}>
             <Link to={`/product/${product._id}`}>{product.title}</Link>
+            <Link to={`/product/edit/${product._id}`}>Edit</Link>
+            <button onClick={() => deleteProduct(product._id)}>
+              Delete Product
+            </button>
           </div>
         );
       })}

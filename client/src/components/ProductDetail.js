@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 
 const ProductDetail = (props) => {
   const [product, setProduct] = useState({});
   const { id } = props;
+
+  const deleteProduct = () => {
+    axios
+      .delete(`http://localhost:8000/api/product/${id}`)
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        navigate("/");
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     axios
@@ -18,10 +29,11 @@ const ProductDetail = (props) => {
 
   return (
     <div>
-      <h3>{product.title}</h3>
-      <p>{product.price}</p>
-      <p>{product.description}</p>
+      <h3>Title: {product.title}</h3>
+      <p>Price: ${product.price}</p>
+      <p>Description: {product.description}</p>
       <Link to={"/"}>Return to Home</Link>
+      <button onClick={deleteProduct}>Delete</button>
     </div>
   );
 };

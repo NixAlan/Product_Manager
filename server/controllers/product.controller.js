@@ -35,4 +35,34 @@ module.exports = {
 
       .catch((err) => res.json(err));
   },
+
+  deleteOneGame: (req, res) => {
+    Product.deleteOne({ _id: req.params.id })
+      .then((deleteGame) => {
+        console.log(deleteGame);
+        res.json(deleteGame);
+      })
+      .catch((err) => {
+        console.log("Delete Product Failed");
+        res.json({
+          message: "something went wrong deleting a game",
+          error: err,
+        });
+      });
+  },
+
+  updateProduct: (req, res) => {
+    Product.findOneAndUpdate({ _id: req.params.id }, req.body, {
+      new: true,
+      runValidators: true,
+    })
+      .then((updateProduct) => {
+        console.log(updateProduct);
+        res.json(updateProduct);
+      })
+      .catch((err) => {
+        console.log("somthing went wrong in updating product");
+        res.status(400).json(err);
+      });
+  },
 };
